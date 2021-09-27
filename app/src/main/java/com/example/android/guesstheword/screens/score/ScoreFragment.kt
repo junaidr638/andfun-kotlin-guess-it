@@ -22,10 +22,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.guesstheword.R
 import com.example.android.guesstheword.databinding.ScoreFragmentBinding
+import com.example.android.guesstheword.screens.game.GameFragmentDirections
 
 /**
  * Fragment where the final score is shown, after the game is over
@@ -46,14 +49,25 @@ class ScoreFragment : Fragment() {
                 false
         )
 
-        // TODO (04) Create and construct a ScoreViewModelFactory
-        // TODO (05) Create ScoreViewModel by using ViewModelProvider as usual, except also
+        val factory = ScoreViewModelFactory(ScoreFragmentArgs.fromBundle(arguments!!).score)
+        val viewModel = ViewModelProviders.of(this,factory).get(ScoreViewModel::class.java)
+        viewModel.finalScore.observe(this, Observer {
+            binding.scoreText.text = it.toString()
+        })
+
+        viewModel.playAgain.observe(this, Observer {
+        onPlayAgain()
+        })
+
+
+        //  (04) Create and construct a ScoreViewModelFactory
+        //  (05) Create ScoreViewModel by using ViewModelProvider as usual, except also
         // pass in your ScoreViewModelFactory
 
         // Get args using by navArgs property delegate
-        val scoreFragmentArgs by navArgs<ScoreFragmentArgs>()
-        binding.scoreText.text = scoreFragmentArgs.score.toString()
+
         binding.playAgainButton.setOnClickListener { onPlayAgain() }
+
 
         // TODO (07) Convert this class to properly observe and use ScoreViewModel
 
@@ -61,6 +75,7 @@ class ScoreFragment : Fragment() {
     }
 
     private fun onPlayAgain() {
-        findNavController().navigate(ScoreFragmentDirections.actionRestart())
+    val action = ScoreFragmentDirections.actionRestart()
+        findNavController().navigate(action)
     }
 }

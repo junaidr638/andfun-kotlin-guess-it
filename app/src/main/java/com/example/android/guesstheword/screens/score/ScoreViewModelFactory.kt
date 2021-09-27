@@ -16,7 +16,20 @@
 
 package com.example.android.guesstheword.screens.score
 
-// TODO (02) Copy over ScoreViewModelFactory - have it also take in a constructor parameter called
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.android.guesstheword.screens.game.GameViewModel
+import java.lang.IllegalArgumentException
+
+class ScoreViewModelFactory(private val score : Int):ViewModelProvider.Factory{
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(GameViewModel::class.java)){
+            return ScoreViewModel(score) as T
+        }
+        throw IllegalArgumentException("Oops! Something went wrong in ScoreViewModel")
+    }
+}
+// Copy over ScoreViewModelFactory - have it also take in a constructor parameter called
 // finalScore
-// TODO (03) In the overridden create method, construct an instance of ScoreViewModel,
+//  In the overridden create method, construct an instance of ScoreViewModel,
 // passing in finalScore
